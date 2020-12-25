@@ -4,20 +4,28 @@ var querystring = require('querystring');
 
 
 
-const mydomain = ""
-const hostname = ""
+const mydomain1 = ""
+const hostname1 = ""
 const gdapikey = "";
+const gdapisecret = "";
 
 
-async function GDDynDns(){
+async function GDDynDns(mydomain, hostname){
 
   const ipv4 = await publicIp.v4();
 
 
 
-  const data = JSON.stringify({
-    data: ipv4.toString()
-  })
+  const data = 	[
+    {
+      "data": `${ipv4}`,
+      "port": 1,
+      "priority": 1,
+      "ttl": 600,
+      "weight": 0
+    }
+  ]
+
   console.log(data)
 
 
@@ -25,24 +33,24 @@ async function GDDynDns(){
     method: 'PUT',
     url: `https://api.godaddy.com/v1/domains/${mydomain}/records/A/${hostname}`,
     headers: {
-      'authorization': `sso-key ${gdapikey}`,
-      'content-type': 'application/json'
+      'Authorization': `sso-key ${gdapikey}:${gdapisecret}`,
+      'Content-Type': 'application/json',
+      'Content-Lenght': data.length
     },
-    body: [ data ],
-    json: true
+    json: data
   }
 rp(options)
 .then(function (parsedBody) {
    console.log(parsedBody);
 })
 .catch(function (err) {
-  console.log(err);
+  console.log(err.message);
 });
 
 
 }
 
-GDDynDns();
+GDDynDns(mydomain1, hostname1);
  
     
       
