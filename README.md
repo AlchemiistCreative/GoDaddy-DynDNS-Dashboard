@@ -6,7 +6,7 @@ DynDNS API Based.
 
 ```javascript
 
-GDDynDns('alchemistcreative.cloud', 'wwww')
+GDDynDns('alchemistcreative.cloud', 'wwww');
 
 
 ```
