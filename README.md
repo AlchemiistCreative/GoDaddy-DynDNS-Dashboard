@@ -31,3 +31,9 @@ CREATE TABLE `config` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 ```
+
+## Install these NPM packages:
+
+```bash
+  npm install request-promise public-ip node-schedule express-session express mysql ejs --save
+```
