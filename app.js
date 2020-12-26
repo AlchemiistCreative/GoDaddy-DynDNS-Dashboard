@@ -1,10 +1,11 @@
 const rp = require('request-promise')
 const publicIp = require('public-ip');
-var querystring = require('querystring');
 const cron = require('node-cron');
 const express = require('express');
 const bodyparser = require('body-parser');
 const session = require('express-session');
+var scheduler = require('node-schedule');
+
 
 
 // Express JS
@@ -29,28 +30,70 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
   let Message = require('./models/message');
 
-  Message.all((ressources) => {
+  Message.all((mains) => {
 
     let GD = require('./models/gd');
 
-    GD.get_ip((ip) => {
+    GD.get_config((configs) => {
 
-      res.render('index', {ressources: ressources, ip: ip});
+      res.render('index', {mains: mains, configs: configs});
 
 
     })
 
-  
-
   })
-  
 
-  
+  let Default_ = require('./config/default_table_entry')
+
+  Default_();
+
+
 
 })
 
 
+app.post('/dyndns', (req, res) => {
+  let GD = require('./models/gd');
+  let schedule = req.body.schedule
 
+  GD.add_schedule(schedule, () => {
+
+    GD_cron();
+
+  })
+
+  publicIP();
+
+  res.redirect('/');
+
+})
+
+app.post('/setcred', (req, res) => {
+  let GD = require('./models/gd');
+  let apikey = req.body.apikey
+  let secretkey = req.body.secretkey
+  GD.add_credentials(apikey, secretkey, () => {
+
+   
+
+  })
+  req.flash('success', 'API added.');
+
+  res.redirect('/');
+
+})
+
+// app.post('/schedule', (req, res) => {
+//   let GD = require('./models/gd');
+//   let schedule = req.body.schedule
+ 
+//   GD.add_schedule(schedule, () => {
+
+//   })
+
+//   res.redirect('/');
+
+// })
 
 app.post('/add', (req, res) => {
   console.log('add');
@@ -63,49 +106,14 @@ app.post('/add', (req, res) => {
   }else{
   
     let Message = require('./models/message');
-  
-  
-  
-    Message.create(req.body.domain_add, req.body.content_add, function () {
+
+    Message.create(req.body.domain_add, req.body.content_add, req.body.type_add, function () {
   
         req.flash('success', 'Domain Succesfully added.');
     
         res.redirect('/')
       })
-  
-  
   }
- 
-
-
-})
-
-
-app.post('/', (req, res) => {
-
-
-if(req.body.domain === undefined || req.body.domain === ''){
-
-  req.flash('error', 'You didnt specified a domain name.');
-  res.redirect('/')
-
-}else{
-
-  let Message = require('./models/message');
-
-
-
-  Message.update(req.body.domain, function () {
-
-      req.flash('success', 'Domain Succesfully added.');
-  
-      res.redirect('/')
-    })
-
-
-}
-
-
 
 })
 
@@ -123,7 +131,7 @@ app.post('/:id', (req, res) => {
   
   
   
-    Message.update(req.body.domain, req.body.content, req.params.id, function () {
+    Message.update(req.body.domain, req.body.content,req.body.type, req.params.id, function () {
   
         req.flash('success', 'Domain Succesfully updated.');
     
@@ -133,11 +141,7 @@ app.post('/:id', (req, res) => {
   
   }
  
-
-
 })
-
-
 
 app.get('/:id/delete', (req, res) => {
 
@@ -145,47 +149,29 @@ app.get('/:id/delete', (req, res) => {
 
   Message.delete(req.params.id, function(){
     req.flash('success', 'Domain Succesfully deleted.');
-    
     res.redirect('/')
-  
-
   })
-
-})
-
-
-app.get('/dyndns', (req, res) => {
-
-  GD_cron(() => {
-
-   
-
-  })
-
-  res.redirect('/');
-
 })
 
 app.listen('3000');
 
-
-
-
-
 //GD
 
-const gdapikey = "";
-const gdapisecret = "";
+async function publicIP(){
 
-async function GDDynDns(mydomain, hostname){
-
-    const ipv4 = await publicIp.v4();
-    let GD = require('./models/gd');
-    GD.add_ip(ipv4, function() {
+  const ipv4 = await publicIp.v4();
+  let GD = require('./models/gd');
+  
+  GD.update_ip(ipv4, function() {
 
 
+  })
 
-    })
+}
+
+function GDDynDns(mydomain,type,hostname,ipv4, apikey, secretkey){
+
+
   
     const data = 	[
       {
@@ -197,14 +183,14 @@ async function GDDynDns(mydomain, hostname){
       }
     ]
   
-    console.log(data)
+    
   
   
     var options = {
       method: 'PUT',
-      url: `https://api.godaddy.com/v1/domains/${mydomain}/records/A/${hostname}`,
+      url: `https://api.godaddy.com/v1/domains/${mydomain}/records/${type}/${hostname}`,
       headers: {
-        'Authorization': `sso-key ${gdapikey}:${gdapisecret}`,
+        'Authorization': `sso-key ${apikey}:${secretkey}`,
         'Content-Type': 'application/json',
         'Content-Lenght': data.length
       },
@@ -220,31 +206,66 @@ async function GDDynDns(mydomain, hostname){
   
   
   }
+  const convertTime12to24 = (time12h) => {
+    const [time, modifier] = time12h.split(' ');
+  
+    let [hours, minutes] = time.split(':');
+  
+    if (hours === '12') {
+      hours = '00';
+    }
+  
+    if (modifier === 'PM') {
+      hours = parseInt(hours, 10) + 12;
+    }
+  
+    return `${hours}:${minutes}`;
+  }
+
+
+
 
 function GD_cron () {
 
     let GD = require('./models/gd');
-    GD.all((ressources) => {
-
-            for (ressource of ressources){
-                
-                console.log(ressource.domain)
-                GDDynDns(ressource.domain, ressource.content);
-
-            }
-     
     
+      GD.get_config((ressources) => {
+              for (ressource of ressources){
+
+                GD.all((mains) => {
+
+                  for (main of mains){
+
+                    var time_ = convertTime12to24(ressource.schedule);
+            
+                    var time = time_.split ( ":" );
+          
+ 
+                    var hours = time[0];
+                    var minutes = time[1];
+                 
+                    GDDynDns(main.domain, main.types, main.content, ressource.ip,ressource.apikey, ressource.secretkey);
+ 
+                     var rule = new scheduler.RecurrenceRule();
+                     rule.hour = hours;
+                     rule.minute = minutes;
+                     
+                     var j = scheduler.scheduleJob(rule, function(){
+                       GDDynDns(main.domain, main.types, main.content,ressource.ip,ressource.apikey, ressource.secretkey);
+                       console.log('Updated');
+                     });
+ 
+                   }
+            
+                })
+
+              }
+
       })
-
-
 }
 
 
-/*cron.schedule('* * * * *', function() {
 
-  GDDynDns(mydomain1, hostname1);
-
-})*/
  
 
       

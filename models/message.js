@@ -21,10 +21,13 @@ class Message {
 
         return this.row.id
     }
-    
-    static create(domains,content,cb) {
+    get types(){
 
-        connection.query('INSERT INTO ressources SET domain = ?,content = ?', [domains, content], (err, result) => {
+        return this.row.types
+    }
+    static create(domains,content,type,cb) {
+
+        connection.query('INSERT INTO main SET domain = ?,content = ?, types = ?', [domains, content, type], (err, result) => {
             if (err) throw err
 
             cb(result);
@@ -33,11 +36,11 @@ class Message {
 
 
     }
-    static update(domains,content,id,cb) {
+    static update(domains,content,type,id,cb) {
 
     
 
-        connection.query('UPDATE ressources SET domain = ?, content = ? WHERE id = ?', [domains, content, id], (err, result) => {
+        connection.query('UPDATE main SET domain = ?, content = ?, types = ? WHERE id = ?', [domains, content,type, id], (err, result) => {
             if (err) throw err
 
             cb(result);
@@ -50,7 +53,7 @@ class Message {
 
     
 
-        connection.query('DELETE FROM ressources WHERE id=?', [id], (err, result) => {
+        connection.query('DELETE FROM main WHERE id=?', [id], (err, result) => {
             if (err) throw err
 
             cb(result);
@@ -62,7 +65,7 @@ class Message {
 
     static all(cb){
 
-        connection.query('SELECT * FROM ressources', (err, rows) => {
+        connection.query('SELECT * FROM main', (err, rows) => {
             if (err) throw err
             cb(rows.map((row) => new Message(row)));
 

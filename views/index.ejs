@@ -1,23 +1,75 @@
     <%- include ('header') -%>
-    <% for (i of ip) { %> 
-    <button class="ui button" onclick="location.href='/dyndns'" type="button">Dyn DNS</button>
-    <h1 class="ui header">Your Public IP is: <%= i.ip  %> </h1>
-    <hr>
-    <% } %>
     <div class="ui comments">
+
+      
+
+      <% for (config of configs) { %> 
+
+        <h1 class="ui header">API Credentials </h1>
+        <div class="ui divider"></div>
+        <form  action="/setcred" method="post" class="ui form">
+        <div class="field">
+          <label>API Key</label>
+          <input name="apikey" value="<%= config.apikey  %>">
+        </div>
+        <div class="field">
+          <label>Secret</label>
+          <input name="secretkey"  value="<%= config.secretkey  %>">
+        </div>
+        <button class="ui button" type="submit">Set Credentials</button>
+        </form>
+
+        <div class="ui divider"></div>
+        <h1 class="ui header">Update will be processed at <%= config.schedule  %> </h1>
+        <div class="ui divider"></div>
         
-    <% for (ressource of ressources) { %>
-    <form  action="/<%= ressource.id  %>" method="post" class="ui form">
+      <form  action="/dyndns" method="post" class="ui form">
+        
+        <div class="ui calendar" id="example5">
+          <div class="ui input left icon">
+            <i class="calendar icon"></i>
+            <input type="text" name="schedule" placeholder="Date" value="<%= config.schedule  %>">
+          </div>
+        </div>
+      </br>
+    <button class="ui button" type="submit">Dyn DNS</button>  
+  </form>
+  <div class="ui divider"></div>
+
+    <h1 class="ui header">Your Public IP is: <%= config.ip  %> </h1>
+
+    <div class="ui divider"></div>
+
+    <% } %>
+
+
+    
+        
+    <% for (main of mains) { %>
+    <form  action="/<%= main.id  %>" method="post" class="ui form">
         <div class="field">
           <label>Domain</label>
-          <input name="domain" value="<%= ressource.domain  %>">
+          <input name="domain" value="<%= main.domain  %>">
         </div>
         <div class="field">
           <label>Hostname</label>
-          <input name="content"  value="<%= ressource.content  %>">
+          <input name="content"  value="<%= main.content  %>">
+        </div>
+        <div class="field">
+            <label>Record type</label>
+            <select class="ui dropdown" name="type">
+                <option value=""><%= main.types %></option>
+                <option value="A">A</option>
+                <option value="CNAME">CNAME</option>
+                <option value="MX">MX</option>
+                <option value="SRV">SRV</option>
+                <option value="TXT">TXT</option>
+                <option value="AAAA">AAAA</option>
+                <option value="NS">NS</option>
+            </select>
         </div>
         <button class="ui button" type="submit">Submit</button>
-        <button class="ui button" onclick="location.href='/<%= ressource.id  %>/delete'" type="button">Delete</button>
+        <button class="ui button" onclick="location.href='/<%= main.id  %>/delete'" type="button">Delete</button>
       </form>
 
 
@@ -25,7 +77,7 @@
 
 
       <% } %>
-      <hr>
+      <div class="ui divider"></div>
 
       <form action="/add" method="post" class="ui form">
         <div class="field">
@@ -36,14 +88,31 @@
           <label>Hostname</label>
           <input name="content_add" >
         </div>
+        <div class="field">
+            <label>Record type</label>
+            <select class="ui dropdown" name="type_add">
+                <option value="">Select</option>
+                <option value="A">A</option>
+                <option value="CNAME">CNAME</option>
+                <option value="MX">MX</option>
+                <option value="SRV">SRV</option>
+                <option value="TXT">TXT</option>
+                <option value="AAAA">AAAA</option>
+                <option value="NS">NS</option>
+            </select>
+        </div>
         <button class="ui button" type="submit">Add Domain</button>
       </form>
       
     </div>
 
 
+<script>
+  $('#example5').calendar({
+    type: 'time'
+  });
 
-
+</script>
 
 
 

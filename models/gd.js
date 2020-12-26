@@ -27,9 +27,29 @@ class GD {
 
 
     }
+    get schedule(){
+        return this.row.schedule
+
+
+    }
+    get apikey(){
+        return this.row.apikey
+
+
+    }
+    get secretkey(){
+        return this.row.secretkey
+
+
+    }
+    get types(){
+        return this.row.types
+
+
+    }
     static all(cb){
 
-        connection.query('SELECT * FROM ressources', (err, rows) => {
+        connection.query('SELECT * FROM main', (err, rows) => {
             if (err) throw err
             cb(rows.map((row) => new GD(row)));
 
@@ -37,9 +57,9 @@ class GD {
 
 
     }
-    static get_ip(cb){
+    static get_config(cb){
 
-        connection.query('SELECT * FROM IP', (err, rows) => {
+        connection.query('SELECT * FROM config', (err, rows) => {
             if (err) throw err
             cb(rows.map((row) => new GD(row)));
 
@@ -47,9 +67,23 @@ class GD {
 
 
     }
-    static add_ip(ip, cb){
+    static update_ip(ip, cb){
 
-        connection.query('UPDATE IP SET ip = ? WHERE id = 1', [ip], (err, result) => {
+
+
+        connection.query('UPDATE config SET ip = ? WHERE id = 1', [ip], (err, result) => {
+            if (err) throw err
+
+            cb(result);
+
+        });
+
+
+
+    }
+    static add_schedule(schedule, cb){
+
+        connection.query('UPDATE config SET schedule = ? WHERE id = 1', [schedule], (err, result) => {
             if (err) throw err
 
             cb(result);
@@ -57,8 +91,16 @@ class GD {
         });
 
     }
+    static add_credentials(apikey,secretkey, cb){
 
+        connection.query('UPDATE config SET apikey = ?, secretkey = ? WHERE id = 1', [apikey, secretkey], (err, result) => {
+            if (err) throw err
 
+            cb(result);
+
+        });
+
+    }
 
 }
 
