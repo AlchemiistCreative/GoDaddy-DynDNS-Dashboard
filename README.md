@@ -4,6 +4,10 @@ DynDNS API Based.
 
 ## Usage
 
+Connect to a MySQL DB with this config:
+
+You can change DB settings in config/db.js.
+
 ```sql
 
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `GD_DB` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
