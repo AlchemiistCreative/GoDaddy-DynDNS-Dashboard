@@ -2,6 +2,8 @@
 
 DynDNS API Based.
 
+Automatically modify records of multiple domains hosted on Godaddy with your own Public IP.
+
 ## Usage
 
 Connect to a MySQL DB with this config:
