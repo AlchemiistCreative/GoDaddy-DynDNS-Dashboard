@@ -10,7 +10,7 @@ Connect to a MySQL DB with this config:
 
 You can change DB settings in config/db.js.
 
-```sql
+```SQL
 
 CREATE DATABASE `GD_DB;
 USE `GD_DB`;
