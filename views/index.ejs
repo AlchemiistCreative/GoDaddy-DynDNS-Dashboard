@@ -1,0 +1,53 @@
+    <%- include ('header') -%>
+    <% for (i of ip) { %> 
+    <button class="ui button" onclick="location.href='/dyndns'" type="button">Dyn DNS</button>
+    <h1 class="ui header">Your Public IP is: <%= i.ip  %> </h1>
+    <hr>
+    <% } %>
+    <div class="ui comments">
+        
+    <% for (ressource of ressources) { %>
+    <form  action="/<%= ressource.id  %>" method="post" class="ui form">
+        <div class="field">
+          <label>Domain</label>
+          <input name="domain" value="<%= ressource.domain  %>">
+        </div>
+        <div class="field">
+          <label>Hostname</label>
+          <input name="content"  value="<%= ressource.content  %>">
+        </div>
+        <button class="ui button" type="submit">Submit</button>
+        <button class="ui button" onclick="location.href='/<%= ressource.id  %>/delete'" type="button">Delete</button>
+      </form>
+
+
+
+
+
+      <% } %>
+      <hr>
+
+      <form action="/add" method="post" class="ui form">
+        <div class="field">
+          <label>Domain</label>
+          <input name="domain_add">
+        </div>
+        <div class="field">
+          <label>Hostname</label>
+          <input name="content_add" >
+        </div>
+        <button class="ui button" type="submit">Add Domain</button>
+      </form>
+      
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <%- include ('footer') -%> 
