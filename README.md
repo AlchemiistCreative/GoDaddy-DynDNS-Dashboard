@@ -3,7 +3,6 @@
 DynDNS API Based.
 
 ## Usage
-#SQL
 
 ```sql
 
