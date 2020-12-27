@@ -171,8 +171,6 @@ async function publicIP(){
 
 function GDDynDns(mydomain,type,hostname,ipv4, apikey, secretkey){
 
-
-  
     const data = 	[
       {
         "data": `${ipv4}`,
@@ -182,8 +180,6 @@ function GDDynDns(mydomain,type,hostname,ipv4, apikey, secretkey){
         "weight": 0
       }
     ]
-  
-    
   
   
     var options = {
@@ -196,16 +192,16 @@ function GDDynDns(mydomain,type,hostname,ipv4, apikey, secretkey){
       },
       json: data
     }
+
   rp(options)
   .then(function (parsedBody) {
      console.log('Updated');
   })
   .catch(function (err) {
     console.log(err.message);
-  });
-  
-  
+  }); 
   }
+
   const convertTime12to24 = (time12h) => {
     const [time, modifier] = time12h.split(' ');
   
@@ -236,25 +232,19 @@ function GD_cron () {
 
                   for (main of mains){
 
-                    var time_ = convertTime12to24(ressource.schedule);
-            
-                    var time = time_.split ( ":" );
-          
- 
-                    var hours = time[0];
-                    var minutes = time[1];
-                 
-                    GDDynDns(main.domain, main.types, main.content, ressource.ip,ressource.apikey, ressource.secretkey);
- 
-                     var rule = new scheduler.RecurrenceRule();
-                     rule.hour = hours;
-                     rule.minute = minutes;
+                      var time_ = convertTime12to24(ressource.schedule);
+                      var time = time_.split ( ":" );
+                      var hours = time[0];
+                      var minutes = time[1];
+                      var rule = new scheduler.RecurrenceRule();
+                      rule.hour = hours;
+                      rule.minute = minutes;
                      
-                     var j = scheduler.scheduleJob(rule, function(){
-                       GDDynDns(main.domain, main.types, main.content,ressource.ip,ressource.apikey, ressource.secretkey);
-                       console.log('Updated');
-                     });
- 
+                      var j = scheduler.scheduleJob(rule, function(){
+                        GDDynDns(main.domain, main.types, main.content,ressource.ip,ressource.apikey, ressource.secretkey);
+                        console.log('Updated');
+                      });
+  
                    }
             
                 })
