@@ -1,4 +1,4 @@
-version: "2.4"
+version: "3.3"
 
 services:
   security:
@@ -6,17 +6,26 @@ services:
     ports:
      - "3000:3000"
     depends_on:
-      db:
-        condition: service_healthy
-    environment:
-     - DATABASE_HOST=db
+     - db
     volumes:
      - ./app/api:/app/api
   db:
-    build: ./database-service
+    image: mariadb:latest
+    restart: always
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=no
+      - MYSQL_ROOT_PASSWORD=root_example_password
+      - MYSQL_DATABASE=GD_DB
     ports: 
-     - "33060:3306"
+     - "3306:3306"
+    expose:
+     - '3306'
+    volumes:
+     - './database-service/db:/var/lib/mysql'
+     - './database-service/dump:/docker-entrypoint-initdb.d'
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+
+

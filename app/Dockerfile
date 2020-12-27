@@ -7,6 +7,6 @@ RUN apt install -y netcat
 RUN chmod 755 /start.sh
 RUN chmod 755 /wait-for-it.sh
 
-CMD ["/wait-for-it.sh", "db:33060", "--", "/start.sh"]
+CMD ["/wait-for-it.sh", "db:3306", "--", "/start.sh"]
 
 
