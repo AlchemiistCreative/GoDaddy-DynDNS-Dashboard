@@ -32,8 +32,6 @@ CREATE TABLE main
   types varchar(255)
 );
 
-
-
 ```
 
 ## Install these NPM packages:
