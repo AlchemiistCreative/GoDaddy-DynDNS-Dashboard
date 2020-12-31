@@ -1,3 +1,5 @@
+
+
 CREATE TABLE config 
 (
   id INT PRIMARY KEY AUTO_INCREMENT,
