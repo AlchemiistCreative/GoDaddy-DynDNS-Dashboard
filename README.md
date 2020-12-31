@@ -43,7 +43,7 @@ CREATE TABLE main
 ```
 
 ## Usage with Docker
-### Docker-compose available in [docker branch](https://github.com/AlchemiistCreative/GoDaddy-DynDNS-Dashboard/tree/docker)
+### Docker-compose available in [docker branch](https://github.com/AlchemiistCreative/GoDaddy-DynDNS-Dashboard/tree/docker).
 
 ```
 docker-compose up -d
