@@ -39,7 +39,7 @@ CREATE TABLE main
 ## Install these NPM packages:
 
 ```bash
-  npm install request-promise public-ip node-schedule express-session express mysql ejs --save
+  npm install request request-promise public-ip node-schedule express-session express mysql ejs --save
 ```
 
 ## Usage with Docker
