@@ -12,25 +12,27 @@ You can change DB settings in config/db.js.
 
 ```SQL
 
-CREATE DATABASE `GD_DB;
-USE `GD_DB`;
-DROP TABLE IF EXISTS `main`;
-CREATE TABLE `main` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `domain` varchar(255) DEFAULT NULL,
-  `content` varchar(255) DEFAULT NULL,
-  `types` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) DEFAULT CHARSET=utf8;
-DROP TABLE IF EXISTS `config`;
-CREATE TABLE `config` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ip` varchar(255) DEFAULT NULL,
-  `schedule` varchar(255) DEFAULT NULL,
-  `apikey` varchar(255) DEFAULT NULL,
-  `secretkey` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) DEFAULT CHARSET=utf8;
+CREATE DATABASE GD_DB;
+USE GD_DB;
+
+CREATE TABLE config 
+(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  ip varchar(255),
+  schedule varchar(255),
+  apikey varchar(255),
+  secretkey varchar(255)
+); 
+
+CREATE TABLE main
+ (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  domain varchar(255),
+  content varchar(255),
+  types varchar(255)
+);
+
+
 
 ```
 
@@ -40,7 +42,11 @@ CREATE TABLE `config` (
   npm install request-promise public-ip node-schedule express-session express mysql ejs --save
 ```
 
-Docker-compose available in [docker branch](https://github.com/AlchemiistCreative/GoDaddy-DynDNS-Dashboard/tree/docker)
+## Usage with Docker
+### Docker-compose available in [docker branch](https://github.com/AlchemiistCreative/GoDaddy-DynDNS-Dashboard/tree/docker)
 
+```
+docker-compose up -d
+```
 
 
