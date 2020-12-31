@@ -40,7 +40,7 @@ CREATE TABLE `config` (
   npm install request-promise public-ip node-schedule express-session express mysql ejs --save
 ```
 
-Docker-compose available in docker branch:
+Docker-compose available in [docker branch](https://github.com/AlchemiistCreative/GoDaddy-DynDNS-Dashboard/tree/docker)
 
-[a link to a branch](/alchemiistcreative/GoDaddy-DynDNS-Dashboard//tree/docker)
+
 
