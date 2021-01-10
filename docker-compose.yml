@@ -1,12 +1,12 @@
 version: "3"
 
 services:
-  security:
-    image: node:latest
-    ports:
-     - "3000:3000"
+  nodejs:
+    image: node:12
     working_dir: /app/api
-    command: npm start
+    command: bash -c "chmod +x /app/api/start.sh && /bin/sh -c /app/api/start.sh"
+    ports:
+      - "3000:3000"
     depends_on:
      - db
     volumes:
